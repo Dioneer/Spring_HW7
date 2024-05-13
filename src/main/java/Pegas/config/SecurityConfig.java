@@ -24,8 +24,8 @@ public class SecurityConfig {
                         .requestMatchers(antMatcher( "/api/v1/users/{\\d}/avatar")).hasAnyAuthority(user.getAuthority(),admin.getAuthority())
                         .requestMatchers("/public-data", "/users").hasAnyAuthority(user.getAuthority(),admin.getAuthority())
 
-                        .requestMatchers(antMatcher("/users/{\\d}/**")).hasAnyAuthority(admin.getAuthority())
-                        .requestMatchers("/users/{id}/**","/private-data").hasAnyAuthority(admin.getAuthority())
+                        .requestMatchers(antMatcher("/users/{\\d}/**")).hasAuthority(admin.getAuthority())
+                        .requestMatchers("/users/{id}/**","/private-data").hasAuthority(admin.getAuthority())
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
