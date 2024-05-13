@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import static Pegas.entity.Role.admin;
 import static Pegas.entity.Role.user;
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -19,8 +20,12 @@ public class SecurityConfig {
         http.csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/users/registration", "/login").permitAll()
-                        .requestMatchers("/users/{id}","/public-data", "/users", "/api/v1/users/{id}/avatar").hasAnyRole(user.getAuthority(),admin.getAuthority())
-                        .requestMatchers("/users/{id}/delete","/users/{id}/update","/private-data").hasRole(admin.getAuthority())
+                        .requestMatchers(antMatcher("/users/{\\d}")).hasAnyAuthority(user.getAuthority(),admin.getAuthority())
+                        .requestMatchers(antMatcher( "/api/v1/users/{\\d}/avatar")).hasAnyAuthority(user.getAuthority(),admin.getAuthority())
+                        .requestMatchers("/public-data", "/users").hasAnyAuthority(user.getAuthority(),admin.getAuthority())
+
+                        .requestMatchers(antMatcher("/users/{\\d}/**")).hasAnyAuthority(admin.getAuthority())
+                        .requestMatchers("/users/{id}/**","/private-data").hasAnyAuthority(admin.getAuthority())
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
