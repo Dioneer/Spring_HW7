@@ -14,9 +14,7 @@ public class CreateUpdateMapper implements Mapper<CreateUpdateSecurityDto, Secur
     public Security map(CreateUpdateSecurityDto create) {
         Security security = new Security();
         security.setEmail(create.getEmail());
-        security.setEmail(create.getEmail());
         security.setRole(create.getRole());
-        security.setPassword(create.getPassword());
         Optional.ofNullable(create.getImage())
                 .filter(Predicate.not(MultipartFile::isEmpty))
                 .ifPresent(i-> security.setImage(i.getOriginalFilename()));
@@ -26,9 +24,7 @@ public class CreateUpdateMapper implements Mapper<CreateUpdateSecurityDto, Secur
     @Override
     public Security map(CreateUpdateSecurityDto update, Security security) {
         security.setEmail(update.getEmail());
-        security.setEmail(update.getEmail());
         security.setRole(update.getRole());
-        security.setPassword(update.getPassword());
         Optional.ofNullable(update.getImage())
                 .filter(Predicate.not(MultipartFile::isEmpty))
                 .ifPresent(i-> security.setImage(i.getOriginalFilename()));

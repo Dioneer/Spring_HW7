@@ -9,5 +9,4 @@ public class ReadSecurityDto {
     String email;
     Role role;
     String image;
-    String password;
 }

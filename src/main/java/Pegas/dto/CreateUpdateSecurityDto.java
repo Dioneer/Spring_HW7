@@ -9,5 +9,4 @@ public class CreateUpdateSecurityDto {
     String email;
     Role role;
     MultipartFile image;
-    String password;
 }

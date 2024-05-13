@@ -19,7 +19,7 @@ public class Security {
     private String email;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    Role role;
+    private Role role;
     private String image;
     private String password;
 }

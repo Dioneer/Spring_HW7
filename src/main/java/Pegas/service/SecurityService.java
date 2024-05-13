@@ -17,6 +17,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,19 +39,30 @@ public class SecurityService implements UserDetailsService {
                 .orElseThrow();
     }
 
-    public ReadSecurityDto update(CreateUpdateSecurityDto update){
-        return Optional.of(update)
+    public Optional<ReadSecurityDto> update(Long id, CreateUpdateSecurityDto update){
+        return repository.findById(id)
                 .map(i-> {
-                    uploadImage(i.getImage());
-                    return createUpdateMapper.map(i, new Security());
+                    uploadImage(update.getImage());
+                    return createUpdateMapper.map(update, i);
                 })
                 .map(repository::save)
-                .map(readMapper::map)
-                .orElseThrow();
+                .map(readMapper::map);
     }
 
     public Optional<ReadSecurityDto> findById(Long id){
         return repository.findById(id).map(readMapper::map);
+    }
+
+    public boolean delete(Long id){
+        return repository.findById(id).map(i->{
+            repository.delete(i);
+            repository.flush();
+            return true;
+        }).orElse(false);
+    }
+
+    public List<ReadSecurityDto> findAll(){
+        return repository.findAll().stream().map(readMapper::map).toList();
     }
 
     @SneakyThrows
@@ -67,9 +79,8 @@ public class SecurityService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
-        return repository.findByEmail(userEmail).map(i-> {
-            return new User(
-                    i.getEmail(), i.getPassword(), Collections.singleton(i.getRole()));
-        }).orElseThrow(()-> new UsernameNotFoundException("Failed to retrieve user: " + userEmail));
+        return repository.findByEmail(userEmail).map(i-> new User(
+                i.getEmail(), i.getPassword(), Collections.singleton(i.getRole())))
+                .orElseThrow(()-> new UsernameNotFoundException("Failed to retrieve user: " + userEmail));
     }
 }

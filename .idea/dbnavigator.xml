@@ -33,7 +33,9 @@ drop table security;]]></console>
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files />
+    <open-files>
+      <object connection-id="0a9775e7-d8e7-41b4-ada0-1a4da1bb80f0" object-ref="schemas/public/tables/security" />
+    </open-files>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="0a9775e7-d8e7-41b4-ada0-1a4da1bb80f0" />
