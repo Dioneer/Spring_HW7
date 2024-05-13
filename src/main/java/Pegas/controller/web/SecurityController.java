@@ -5,19 +5,16 @@ import Pegas.entity.Role;
 import Pegas.service.SecurityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class SecurityController {
     private final SecurityService service;
 
@@ -26,11 +23,6 @@ public class SecurityController {
         model.addAttribute("user", user);
         model.addAttribute("roles", Role.values());
         return "registration";
-    }
-
-    @GetMapping(value = "/{id}/avatar", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public byte[] findAvatar(Model model, @PathVariable("id") Long id){
-        return service.findAvatar(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping

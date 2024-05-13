@@ -41,6 +41,7 @@ drop table security;]]></console>
     <connection id="0a9775e7-d8e7-41b4-ada0-1a4da1bb80f0" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-actions connection-id="0a9775e7-d8e7-41b4-ada0-1a4da1bb80f0" dataset="public.tasks" active-filter-id="" />
     <filter-actions connection-id="0a9775e7-d8e7-41b4-ada0-1a4da1bb80f0" dataset="public.security" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.ExecutionManager">

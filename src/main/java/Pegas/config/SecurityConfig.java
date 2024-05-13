@@ -4,43 +4,39 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import static Pegas.entity.Role.admin;
+import static Pegas.entity.Role.user;
 
-//@Configuration
-//@EnableWebSecurity
-//public class SecurityConfig {
-//
-//    @Bean
-//    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeHttpRequests((authorize) -> authorize
-//                        .requestMatchers("/", "/index").permitAll()
-//                        .requestMatchers("/public-data").hasAnyRole("USER","ADMIN")
-//                        .requestMatchers("/private-data").hasAnyRole("ADMIN")
-//                        .anyRequest().authenticated()
-//                )
-//                .formLogin(login -> login
-//                        .defaultSuccessUrl("/")
-//                        .permitAll())
-//                .logout(logout -> logout
-//                        .logoutSuccessUrl("/"));
-//        return http.build();
-//    }
-//
-//    @Bean
-//    PasswordEncoder passwordEncoder() {
-//        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//    }
-//
-//    @Bean
-//    UserDetailsManager inMemoryUserDetailsManager() {
-//        var user1 = User.withUsername("user").password("{noop}password").roles("USER").build();
-//        var user2 = User.withUsername("admin").password("{noop}password").roles("USER", "ADMIN").build();
-//        return new InMemoryUserDetailsManager(user1, user2);
-//    }
-//}
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf(CsrfConfigurer::disable)
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/users/registration", "/login").permitAll()
+                        .requestMatchers("/users/{id}","/public-data", "/users", "/api/v1/users/{id}/avatar").hasAnyRole(user.getAuthority(),admin.getAuthority())
+                        .requestMatchers("/users/{id}/delete","/users/{id}/update","/private-data").hasRole(admin.getAuthority())
+                        .anyRequest().authenticated()
+                )
+                .formLogin(login -> login
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/users")
+                        .permitAll())
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login")
+                        .deleteCookies("JSESSIONID"));
+        return http.build();
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+}
