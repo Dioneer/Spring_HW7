@@ -1,5 +1,6 @@
 package Pegas.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,7 +15,9 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+    private final SuccessHandler successHandler;
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(CsrfConfigurer::disable)
@@ -30,7 +33,7 @@ public class SecurityConfig {
                 )
                 .formLogin(login -> login
                         .loginPage("/login")
-                        .defaultSuccessUrl("/users")
+                        .successHandler(successHandler)
                         .permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
